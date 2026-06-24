@@ -2,351 +2,222 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Junior WAEC Exam Prep - Flashcards</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Junior WAEC Prep: Maths & CCA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .preserve-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
-        /* Prevent tap highlight on mobile for better app feel */
-        * {
-            -webkit-tap-highlight-color: transparent;
-        }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .flip-card-inner { transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); }
+        .flip-card-inner.flipped { transform: rotateY(180deg); }
+        * { -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
-<body class="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col selection:bg-blue-200">
 
-    <!-- Header -->
-    <header id="app-header" class="py-5 sm:py-6 px-4 text-white shadow-md bg-indigo-600 transition-colors duration-500">
-        <div class="max-w-4xl mx-auto flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-            <div>
-                <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Kaduna Junior WAEC Prep</h1>
-                <p class="text-xs sm:text-sm opacity-90">Flashcards for Tomorrow's Exams</p>
-            </div>
-        </div>
+    <header class="bg-blue-600 text-white p-4 shadow-md">
+        <h1 class="text-2xl font-bold text-center">Junior WAEC Quick Prep</h1>
+        <p class="text-center text-blue-100 text-sm mt-1">Kaduna State JSCE Revision</p>
     </header>
 
-    <main class="flex-grow flex flex-col items-center py-6 sm:py-10 px-4 max-w-4xl mx-auto w-full">
-        
-        <!-- Subject Selector -->
-        <div class="flex bg-slate-200 p-1 rounded-xl mb-6 sm:mb-8 shadow-inner w-full sm:w-auto">
-            <button id="btn-crs" onclick="setSubject('CRS')" class="flex-1 sm:flex-none px-4 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300 bg-white text-indigo-700 shadow-sm text-sm sm:text-base">
-                CRS
-            </button>
-            <button id="btn-pvs" onclick="setSubject('PVS')" class="flex-1 sm:flex-none px-4 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300 text-slate-500 hover:text-slate-700 text-sm sm:text-base">
-                PVS (Agric/Home Econs)
-            </button>
+    <main class="flex-grow flex flex-col items-center p-4 max-w-lg mx-auto w-full">
+        <div class="flex w-full bg-gray-200 rounded-lg p-1 mb-6 shadow-inner">
+            <button id="tab-maths" onclick="switchSubject('maths')" class="flex-1 py-2 text-center rounded-md font-semibold bg-white text-blue-600 shadow transition-all">Mathematics</button>
+            <button id="tab-cca" onclick="switchSubject('cca')" class="flex-1 py-2 text-center rounded-md font-semibold text-gray-600 transition-all hover:text-blue-600">CCA</button>
         </div>
 
-        <!-- Progress Tracker -->
-        <div class="w-full max-w-2xl flex justify-between items-center mb-4 text-sm font-medium text-slate-500 px-2 sm:px-0">
-            <span id="progress-text">Card 1 of 15</span>
-            <div class="flex items-center gap-2">
-                <span class="hidden sm:inline">Use</span>
-                <kbd class="hidden sm:inline-block px-2 py-1 bg-slate-200 rounded text-xs border border-slate-300 shadow-sm">←</kbd>
-                <kbd class="hidden sm:inline-block px-2 py-1 bg-slate-200 rounded text-xs border border-slate-300 shadow-sm">Space</kbd>
-                <kbd class="hidden sm:inline-block px-2 py-1 bg-slate-200 rounded text-xs border border-slate-300 shadow-sm">→</kbd>
-                <span class="hidden sm:inline">to navigate</span>
-                <span class="sm:hidden text-xs">Tap card to flip</span>
-            </div>
+        <div class="w-full flex justify-between items-center mb-2 px-2">
+            <span id="subject-title" class="font-bold text-gray-700">Mathematics</span>
+            <span id="progress-text" class="text-sm font-medium text-gray-500">Card 1 / 30</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+            <div id="progress-bar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 3.3%"></div>
         </div>
 
-        <!-- Flashcard Component -->
-        <div class="w-full max-w-2xl aspect-[4/3] sm:aspect-[16/9] cursor-pointer perspective-1000 mb-8" onclick="toggleFlip()">
-            <div id="card-inner" class="relative w-full h-full duration-700 preserve-3d transition-transform" style="transition-timing-function: cubic-bezier(0.4, 0.2, 0.2, 1);">
-                
-                <!-- Front of Card (Question) -->
-                <div id="card-front" class="absolute w-full h-full backface-hidden bg-white rounded-2xl shadow-xl border-t-8 border-indigo-500 flex flex-col items-center justify-center p-6 sm:p-12 text-center transition-colors duration-500">
-                    <span id="label-front" class="uppercase tracking-widest text-xs font-bold mb-4 sm:mb-6 text-indigo-400 transition-colors duration-500">
-                        Question
-                    </span>
-                    <h2 id="question-text" class="text-xl sm:text-3xl font-bold text-slate-800 leading-snug">
-                        Loading...
-                    </h2>
-                    <p class="absolute bottom-4 sm:bottom-6 text-slate-400 text-xs sm:text-sm animate-pulse">Tap to reveal answer</p>
+        <div class="w-full h-64 md:h-80 perspective-1000 cursor-pointer w-full group" onclick="flipCard()">
+            <div id="flashcard" class="flip-card-inner relative w-full h-full transform-style-3d shadow-xl rounded-2xl">
+                <div class="absolute w-full h-full backface-hidden bg-white border-2 border-blue-100 rounded-2xl flex flex-col items-center justify-center p-6 text-center">
+                    <div class="absolute top-4 left-4 text-xs font-bold text-blue-400 uppercase tracking-wider">Question</div>
+                    <p id="question-text" class="text-xl md:text-2xl font-medium text-gray-800 leading-snug"></p>
+                    <div class="absolute bottom-4 text-gray-400 text-sm flex items-center gap-1 animate-pulse">
+                        Tap to flip
+                    </div>
                 </div>
-
-                <!-- Back of Card (Answer) -->
-                <div id="card-back" class="absolute w-full h-full backface-hidden rotate-y-180 bg-slate-50 rounded-2xl shadow-xl border-t-8 border-indigo-500 flex flex-col items-center justify-center p-6 sm:p-12 text-center transition-colors duration-500 overflow-y-auto">
-                    <span id="label-back" class="uppercase tracking-widest text-xs font-bold mb-4 sm:mb-6 text-indigo-400 transition-colors duration-500 shrink-0">
-                        Answer
-                    </span>
-                    <h2 id="answer-text" class="text-lg sm:text-2xl font-medium text-slate-700 leading-relaxed my-auto">
-                        Loading...
-                    </h2>
+                <div class="absolute w-full h-full backface-hidden bg-blue-50 border-2 border-blue-200 rounded-2xl flex flex-col items-center justify-center p-6 text-center rotate-y-180">
+                    <div class="absolute top-4 left-4 text-xs font-bold text-green-500 uppercase tracking-wider">Answer</div>
+                    <p id="answer-text" class="text-xl md:text-2xl font-bold text-blue-800 leading-snug"></p>
                 </div>
-
             </div>
         </div>
 
-        <!-- Controls -->
-        <div class="flex items-center gap-4 sm:gap-6">
-            <button onclick="shuffleCards()" class="p-3 sm:p-4 rounded-full bg-white shadow hover:shadow-md text-slate-500 hover:text-slate-800 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400" title="Shuffle Cards">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/>
-                    <path d="m18 2 4 4-4 4"/>
-                    <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/>
-                    <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/>
-                    <path d="m18 14 4 4-4 4"/>
-                </svg>
+        <div class="w-full mt-4">
+            <button onclick="randomizeCards()" class="w-full bg-purple-100 text-purple-700 py-2 rounded-lg font-semibold hover:bg-purple-200 transition">
+                🔀 Randomize Cards
             </button>
-
-            <div class="flex gap-2 sm:gap-4">
-                <button id="btn-prev" onclick="prevCard()" class="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-600 focus:ring-indigo-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m15 18-6-6 6-6"/>
-                    </svg>
-                </button>
-                <button id="btn-flip" onclick="toggleFlip()" class="px-6 sm:px-8 py-2 sm:py-3 rounded-full text-white font-bold tracking-wide shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-500 focus:ring-indigo-400 text-sm sm:text-base">
-                    FLIP
-                </button>
-                <button id="btn-next" onclick="nextCard()" class="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-600 focus:ring-indigo-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m9 18 6-6-6-6"/>
-                    </svg>
-                </button>
-            </div>
         </div>
 
+        <div class="flex justify-between w-full mt-4 gap-4">
+            <button onclick="prevCard()" class="flex-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl font-semibold shadow-sm hover:bg-gray-50 transition flex items-center justify-center">Previous</button>
+            <button onclick="nextCard()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition flex items-center justify-center">Next</button>
+        </div>
     </main>
 
-    <footer class="py-6 text-center text-slate-400 text-xs sm:text-sm px-4">
-        <p>Good luck with your exams tomorrow! Review these concepts thoroughly.</p>
+    <footer class="mt-auto p-4 text-center text-gray-400 text-xs">
+        Study hard, you've got this!
     </footer>
 
     <script>
         const flashcardsData = {
-            CRS: [
-                { q: "What was the main theme of Jesus' teachings?", a: "The Kingdom of God." },
-                { q: "Where did Jesus perform his first miracle?", a: "At a wedding in Cana of Galilee, turning water into wine." },
-                { q: "Who were the parents of John the Baptist?", a: "Zechariah (a priest) and Elizabeth." },
-                { q: "What is the significance of the Day of Pentecost?", a: "It marks the descent of the Holy Spirit on the disciples, empowering them to preach." },
-                { q: "Who was the first Christian martyr?", a: "Stephen, who was stoned to death for his faith." },
-                { q: "What was Apostle Paul's original name and where was he born?", a: "His original name was Saul, and he was born in Tarsus." },
-                { q: "What are the Synoptic Gospels?", a: "The books of Matthew, Mark, and Luke, which share a similar view of Jesus' life." },
-                { q: "In the parable of the Good Samaritan, who actually helped the wounded man?", a: "A Samaritan (despite the enmity between Jews and Samaritans)." },
-                { q: "Name four fruits of the Holy Spirit.", a: "Love, Joy, Peace, Patience (or Longsuffering), Kindness, Goodness, Faithfulness, Gentleness, Self-control." },
-                { q: "Who betrayed Jesus, and for what price?", a: "Judas Iscariot betrayed him for 30 pieces of silver." },
-                { q: "Which prophet confronted King Ahab and Jezebel over Naboth's vineyard?", a: "Prophet Elijah." },
-                { q: "What did God create on the first day of creation?", a: "Light (He separated light from darkness)." },
-                { q: "Who was the Roman governor that sentenced Jesus to crucifixion?", a: "Pontius Pilate." },
-                { q: "Where were the believers first called 'Christians'?", a: "In the city of Antioch." },
-                { q: "What are the two greatest commandments according to Jesus?", a: "1. Love God with all your heart. 2. Love your neighbor as yourself." },
-                { q: "Who led the Israelites across the Jordan River into the Promised Land?", a: "Joshua." },
-                { q: "What food did God use to feed the Israelites in the wilderness?", a: "Manna and quails." },
-                { q: "Who was the mother of Prophet Samuel?", a: "Hannah." },
-                { q: "What was David's occupation before he was anointed King?", a: "He was a shepherd." },
-                { q: "Which king built the first permanent temple for God in Jerusalem?", a: "King Solomon." },
-                { q: "What was the central message of the Prophet Amos?", a: "Social justice and righteousness." },
-                { q: "Which angel announced the birth of Jesus to Mary?", a: "Angel Gabriel." },
-                { q: "In what river was Jesus baptized by John the Baptist?", a: "River Jordan." },
-                { q: "How many times did the devil tempt Jesus in the wilderness?", a: "Three times." },
-                { q: "In the Parable of the Sower, what does the seed represent?", a: "The Word of God." },
-                { q: "What miracle did Jesus perform at the pool of Bethesda?", a: "He healed a man who had been paralyzed for 38 years." },
-                { q: "Who was the wealthy tax collector that climbed a sycamore tree to see Jesus?", a: "Zacchaeus." },
-                { q: "Which disciple denied knowing Jesus three times before the rooster crowed?", a: "Simon Peter." },
-                { q: "Who was forced by the Roman soldiers to help Jesus carry his cross?", a: "Simon of Cyrene." },
-                { q: "From which mountain did Jesus ascend into heaven?", a: "Mount of Olives." },
-                { q: "Who replaced Judas Iscariot as the twelfth apostle?", a: "Matthias." },
-                { q: "Who was the Roman Centurion that Apostle Peter preached to, leading to the first Gentile converts?", a: "Cornelius." },
-                { q: "What major event happened to Saul on the road to Damascus?", a: "He encountered the resurrected Jesus and was converted to Christianity." },
-                { q: "What was the main problem discussed at the Council of Jerusalem?", a: "Whether Gentile converts needed to be circumcised to be saved." },
-                { q: "Which married couple lied to the Holy Spirit about the money they gave to the church and died instantly?", a: "Ananias and Sapphira." }
+            maths: [
+                { q: "What is the formula for the area of a circle?", a: "$\\pi r^2$" },
+                { q: "Solve for $x$: $2x + 5 = 15$", a: "$x = 5$" },
+                { q: "What is the square root of 144?", a: "$12$" },
+                { q: "Express 0.0045 in standard form.", a: "$4.5 \\times 10^{-3}$" },
+                { q: "Find the simple interest on ₦5000 for 2 years at 5% per annum.", a: "$\\frac{P \\times R \\times T}{100} = ₦500$" },
+                { q: "What is the sum of angles in a triangle?", a: "$180^\\circ$" },
+                { q: "Find the mode of this set: 2, 4, 4, 5, 6, 4, 8", a: "$4$" },
+                { q: "Convert $101_2$ to base 10.", a: "$5$" },
+                { q: "Perimeter of rect. length 8cm, width 5cm?", a: "$26\\text{cm}$" },
+                { q: "Volume of cuboid 3x4x5?", a: "$60\\text{cm}^3$" },
+                { q: "Pythagorean theorem?", a: "$a^2 + b^2 = c^2$" },
+                { q: "Prob. of Head in coin toss?", a: "$\\frac{1}{2}$" },
+                { q: "Area of triangle formula?", a: "$\\frac{1}{2}bh$" },
+                { q: "Mean of 2, 4, 6, 8?", a: "$5$" },
+                { q: "HCF of 12 and 18?", a: "$6$" },
+                { q: "LCM of 4 and 6?", a: "$12$" },
+                { q: "Expand $(a+b)(a-b)$", a: "$a^2 - b^2$" },
+                { q: "Angles on a straight line sum?", a: "$180^\\circ$" },
+                { q: "Complementary angles sum?", a: "$90^\\circ$" },
+                { q: "Supplementary angles sum?", a: "$180^\\circ$" },
+                { q: "Solve $2x > 8$", a: "$x > 4$" },
+                { q: "Area of trapezium?", a: "$\\frac{1}{2}(a+b)h$" },
+                { q: "25% as a fraction?", a: "$\\frac{1}{4}$" },
+                { q: "Sum of angles at a point?", a: "$360^\\circ$" },
+                { q: "Exterior angle of regular hexagon?", a: "$60^\\circ$" },
+                { q: "500g to kg?", a: "$0.5\\text{kg}$" },
+                { q: "Median of 3, 1, 4, 2, 5?", a: "$3$" },
+                { q: "If $y=3x-2$, $x=4$, $y=?$", a: "$10$" },
+                { q: "Factorize $x^2+5x+6$", a: "$(x+2)(x+3)$" },
+                { q: "What is a scalene triangle?", a: "All sides different" }
             ],
-            PVS: [
-                { q: "Define Agriculture.", a: "The art and science of cultivating the soil, producing crops, and rearing animals for human use." },
-                { q: "List the six main classes of food.", a: "Carbohydrates, Proteins, Fats & Oils, Vitamins, Minerals, and Water." },
-                { q: "Name three common methods of food preservation.", a: "Sun-drying, Salting, Smoking, Freezing, and Canning." },
-                { q: "What is Puberty?", a: "The stage of physical development when a child's body matures into an adult body capable of sexual reproduction." },
-                { q: "Mention five simple farm tools.", a: "Cutlass, Hoe, Rake, Spade, Shovel, and Watering can." },
-                { q: "What is Malnutrition?", a: "A health condition caused by not eating enough food, eating the wrong types of food, or poor absorption of nutrients." },
-                { q: "List three types of stitches used in sewing.", a: "Running stitch, Hemming stitch, Backstitch, and Basting (Tacking)." },
-                { q: "In agriculture, what is a 'weed'?", a: "A weed is any plant that grows in a place where it is not wanted (it competes with crops)." },
-                { q: "State three methods of weed control.", a: "Mechanical (hoeing/hand-pulling), Chemical (using herbicides), and Biological control." },
-                { q: "What are cosmetics?", a: "Substances or products applied to the body (especially the face) to clean, improve, or alter one's physical appearance." },
-                { q: "Name three farm animals classified as Ruminants (animals with complex stomachs).", a: "Cattle, Sheep, and Goats." },
-                { q: "Define Personal Hygiene.", a: "The daily practice of keeping one's body clean to maintain good health and prevent diseases." },
-                { q: "Explain the term 'Crop Rotation'.", a: "The practice of planting different types of crops sequentially on the same plot of land to maintain soil fertility." },
-                { q: "What are body-building foods? Give two examples.", a: "Foods rich in protein that help the body grow and repair tissues. Examples: Beans, Meat, Fish, Eggs." },
-                { q: "Mention three reasons why Agriculture is important to Nigeria's economy.", a: "Provision of food, creation of employment, source of foreign exchange, and provision of raw materials for industries." },
-                { q: "What are the three main types of soil?", a: "Sandy soil, Loamy soil, and Clayey soil." },
-                { q: "Which soil type is generally considered the best for agricultural purposes?", a: "Loamy soil, because it holds water and nutrients well while allowing proper drainage." },
-                { q: "What is Apiculture?", a: "The keeping and breeding of bees for the production of honey and beeswax." },
-                { q: "Mention two examples of tuber crops.", a: "Yam, Cassava, and Sweet Potato." },
-                { q: "Name two cereal crops commonly grown in Northern Nigeria (like Kaduna).", a: "Sorghum (Guinea corn), Millet, and Maize." },
-                { q: "What is the process of removing unwanted, sick, or unproductive animals from a farm flock?", a: "Culling." },
-                { q: "What are macro-nutrients in soil?", a: "Essential nutrients needed by plants in large quantities, such as Nitrogen (N), Phosphorus (P), and Potassium (K)." },
-                { q: "Define a crop pest.", a: "Any living organism (like insects, rodents, or birds) that damages or destroys agricultural crops." },
-                { q: "What is the difference between a stitch and a seam in sewing?", a: "A stitch is a single loop of thread, while a seam is a continuous line of stitching that joins two or more pieces of fabric." },
-                { q: "Give two examples of synthetic (man-made) textile fibers.", a: "Nylon, Polyester, and Acrylic." },
-                { q: "What deficiency disease is caused by a severe lack of Vitamin C?", a: "Scurvy (characterized by bleeding gums)." },
-                { q: "What deficiency disease is caused by a lack of Iron in the diet?", a: "Anemia (leads to weakness and pale skin)." },
-                { q: "What is the primary function of Carbohydrates in the human body?", a: "To provide energy for physical activities and bodily functions." },
-                { q: "State two physical signs of puberty in girls.", a: "Onset of menstruation, development of breasts, and widening of hips." },
-                { q: "State two physical signs of puberty in boys.", a: "Deepening of the voice, growth of facial and pubic hair, and broadening of the chest/shoulders." },
-                { q: "What is Food Hygiene?", a: "The proper handling, preparation, and storage of food to prevent contamination and foodborne diseases." },
-                { q: "What is the very first step to take when doing laundry?", a: "Sorting the clothes (separating whites from colors, heavily soiled from lightly soiled)." },
-                { q: "What does the acronym NAFDAC stand for in Nigeria?", a: "National Agency for Food and Drug Administration and Control." },
-                { q: "What is the gestation period of a sow (female pig)?", a: "Approximately 114 days (or 3 months, 3 weeks, and 3 days)." },
-                { q: "Mention two methods of controlling pests on a farm.", a: "Physical control (traps/handpicking), Chemical control (pesticides), and Biological control." }
+            cca: [
+                { q: "Three primary colors?", a: "Red, Yellow, Blue" },
+                { q: "Music staff/stave?", a: "5 lines, 4 spaces" },
+                { q: "What is Tie-dye?", a: "Resist-dye technique" },
+                { q: "Who is a playwright?", a: "Writer of plays" },
+                { q: "What is Choreography?", a: "Art of arranging dances" },
+                { q: "Secondary colors?", a: "Green, Orange, Purple" },
+                { q: "Paper Mache materials?", a: "Paper, Starch/Glue, Water" },
+                { q: "Treble clef sign?", a: "High pitches" },
+                { q: "Elements of art?", a: "Line, Shape, Color, Texture" },
+                { q: "What is an Audition?", a: "Trial performance" },
+                { q: "What is a Motif?", a: "Repeated pattern" },
+                { q: "Properties of color?", a: "Hue, Value, Intensity" },
+                { q: "What is a Monologue?", a: "Speech by one actor" },
+                { q: "What is a Mural?", a: "Wall painting" },
+                { q: "Three Nigerian crafts?", a: "Pottery, Weaving, Wood carving" },
+                { q: "What is an Octave?", a: "Distance of 8 notes" },
+                { q: "What is Tempo?", a: "Speed of music" },
+                { q: "What is a Tragedy?", a: "Serious play with sad ending" },
+                { q: "What is Origami?", a: "Paper folding art" },
+                { q: "What is a Portrait?", a: "Painting of a person" },
+                { q: "What is Batik?", a: "Wax-resist dyeing" },
+                { q: "Who is a Director?", a: "Guides production" },
+                { q: "What is Forte?", a: "Play loudly" },
+                { q: "Tertiary colors?", a: "Primary + secondary" },
+                { q: "Notes on Treble lines?", a: "E, G, B, D, F" },
+                { q: "What are Props?", a: "Movable stage objects" },
+                { q: "Still Life drawing?", a: "Inanimate objects" },
+                { q: "What is a Choir?", a: "Group of singers" },
+                { q: "What is a Script?", a: "Written text of play" },
+                { q: "What is Calligraphy?", a: "Decorative lettering" }
             ]
         };
 
-        // State variables
-        let activeSubject = 'CRS';
-        let cards = [...flashcardsData[activeSubject]];
+        let currentSubject = 'maths';
         let currentIndex = 0;
         let isFlipped = false;
 
-        // DOM Elements
-        const cardInner = document.getElementById('card-inner');
-        const questionText = document.getElementById('question-text');
-        const answerText = document.getElementById('answer-text');
-        const progressText = document.getElementById('progress-text');
-        
-        const btnCrs = document.getElementById('btn-crs');
-        const btnPvs = document.getElementById('btn-pvs');
-        
-        // Theme Elements to update
-        const appHeader = document.getElementById('app-header');
-        const cardFront = document.getElementById('card-front');
-        const cardBack = document.getElementById('card-back');
-        const labelFront = document.getElementById('label-front');
-        const labelBack = document.getElementById('label-back');
-        const btnPrev = document.getElementById('btn-prev');
-        const btnNext = document.getElementById('btn-next');
-        const btnFlip = document.getElementById('btn-flip');
-
-        function init() {
-            updateUI();
-            updateTheme();
-        }
-
-        function updateUI() {
-            questionText.innerText = cards[currentIndex].q;
-            answerText.innerText = cards[currentIndex].a;
-            progressText.innerText = `Card ${currentIndex + 1} of ${cards.length}`;
-        }
-
-        function updateTheme() {
-            const isCrs = activeSubject === 'CRS';
-
-            // Update Tab Buttons
-            if (isCrs) {
-                btnCrs.className = "flex-1 sm:flex-none px-4 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300 bg-white text-indigo-700 shadow-sm text-sm sm:text-base";
-                btnPvs.className = "flex-1 sm:flex-none px-4 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300 text-slate-500 hover:text-slate-700 text-sm sm:text-base";
-            } else {
-                btnPvs.className = "flex-1 sm:flex-none px-4 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300 bg-white text-emerald-700 shadow-sm text-sm sm:text-base";
-                btnCrs.className = "flex-1 sm:flex-none px-4 sm:px-8 py-3 rounded-lg font-semibold transition-all duration-300 text-slate-500 hover:text-slate-700 text-sm sm:text-base";
-            }
-
-            // Replace Indigo with Emerald or vice versa
-            const themeClasses = isCrs ? 
-                { bgMain: 'bg-indigo-600', border: 'border-indigo-500', textLight: 'text-indigo-400', bgBtn: 'bg-indigo-500', ringMain: 'focus:ring-indigo-500', ringBtn: 'focus:ring-indigo-400' } :
-                { bgMain: 'bg-emerald-600', border: 'border-emerald-500', textLight: 'text-emerald-400', bgBtn: 'bg-emerald-500', ringMain: 'focus:ring-emerald-500', ringBtn: 'focus:ring-emerald-400' };
-            
-            const oldClasses = isCrs ? 
-                { bgMain: 'bg-emerald-600', border: 'border-emerald-500', textLight: 'text-emerald-400', bgBtn: 'bg-emerald-500', ringMain: 'focus:ring-emerald-500', ringBtn: 'focus:ring-emerald-400' } :
-                { bgMain: 'bg-indigo-600', border: 'border-indigo-500', textLight: 'text-indigo-400', bgBtn: 'bg-indigo-500', ringMain: 'focus:ring-indigo-500', ringBtn: 'focus:ring-indigo-400' };
-
-            // Apply swaps
-            appHeader.classList.replace(oldClasses.bgMain, themeClasses.bgMain);
-            
-            cardFront.classList.replace(oldClasses.border, themeClasses.border);
-            cardBack.classList.replace(oldClasses.border, themeClasses.border);
-            
-            labelFront.classList.replace(oldClasses.textLight, themeClasses.textLight);
-            labelBack.classList.replace(oldClasses.textLight, themeClasses.textLight);
-            
-            btnPrev.classList.replace(oldClasses.bgMain, themeClasses.bgMain);
-            btnPrev.classList.replace(oldClasses.ringMain, themeClasses.ringMain);
-            
-            btnNext.classList.replace(oldClasses.bgMain, themeClasses.bgMain);
-            btnNext.classList.replace(oldClasses.ringMain, themeClasses.ringMain);
-            
-            btnFlip.classList.replace(oldClasses.bgBtn, themeClasses.bgBtn);
-            btnFlip.classList.replace(oldClasses.ringBtn, themeClasses.ringBtn);
-        }
-
-        function setSubject(subject) {
-            if (activeSubject === subject) return;
-            activeSubject = subject;
-            cards = [...flashcardsData[activeSubject]];
+        function switchSubject(subject) {
+            currentSubject = subject;
             currentIndex = 0;
-            
+            if (isFlipped) flipCard(true);
+            const mathsTab = document.getElementById('tab-maths');
+            const ccaTab = document.getElementById('tab-cca');
+            if (subject === 'maths') {
+                mathsTab.className = "flex-1 py-2 text-center rounded-md font-semibold bg-white text-blue-600 shadow transition-all";
+                ccaTab.className = "flex-1 py-2 text-center rounded-md font-semibold text-gray-600 transition-all hover:text-blue-600";
+                document.getElementById('subject-title').innerText = "Mathematics";
+            } else {
+                ccaTab.className = "flex-1 py-2 text-center rounded-md font-semibold bg-white text-blue-600 shadow transition-all";
+                mathsTab.className = "flex-1 py-2 text-center rounded-md font-semibold text-gray-600 transition-all hover:text-blue-600";
+                document.getElementById('subject-title').innerText = "Cultural & Creative Arts";
+            }
+            updateUI();
+        }
+
+        function randomizeCards() {
+            // Shuffle the array
+            for (let i = flashcardsData[currentSubject].length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcardsData[currentSubject][i], flashcardsData[currentSubject][j]] = [flashcardsData[currentSubject][j], flashcardsData[currentSubject][i]];
+            }
+            // Reset state
+            currentIndex = 0;
             if (isFlipped) {
-                toggleFlip();
-                setTimeout(() => {
-                    updateUI();
-                    updateTheme();
-                }, 150);
+                // If currently flipped, flip back first then update
+                flipCard(true);
+                setTimeout(updateUI, 300);
             } else {
                 updateUI();
-                updateTheme();
             }
         }
 
-        function toggleFlip() {
+        function flipCard(silent = false) {
             isFlipped = !isFlipped;
-            if (isFlipped) {
-                cardInner.classList.add('rotate-y-180');
-            } else {
-                cardInner.classList.remove('rotate-y-180');
-            }
+            document.getElementById('flashcard').className = `flip-card-inner relative w-full h-full transform-style-3d shadow-xl rounded-2xl ${isFlipped ? 'flipped' : ''}`;
+            if (!silent) MathJax.typesetPromise([document.getElementById('question-text'), document.getElementById('answer-text')]);
         }
 
         function nextCard() {
-            if (isFlipped) toggleFlip();
-            setTimeout(() => {
-                currentIndex = (currentIndex + 1) % cards.length;
-                updateUI();
-            }, 150);
+            currentIndex = (currentIndex + 1) % flashcardsData[currentSubject].length;
+            resetAndLoadCard();
         }
 
         function prevCard() {
-            if (isFlipped) toggleFlip();
-            setTimeout(() => {
-                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-                updateUI();
-            }, 150);
+            currentIndex = (currentIndex - 1 + flashcardsData[currentSubject].length) % flashcardsData[currentSubject].length;
+            resetAndLoadCard();
         }
 
-        function shuffleCards() {
-            if (isFlipped) toggleFlip();
-            setTimeout(() => {
-                cards.sort(() => Math.random() - 0.5);
-                currentIndex = 0;
+        function resetAndLoadCard() {
+            if (isFlipped) {
+                flipCard(true);
+                setTimeout(updateUI, 300);
+            } else {
                 updateUI();
-            }, 150);
-        }
-
-        // Keyboard navigation
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') nextCard();
-            if (e.key === 'ArrowLeft') prevCard();
-            if (e.key === ' ' || e.key === 'Spacebar') {
-                e.preventDefault(); // prevent page scroll
-                toggleFlip();
             }
-        });
+        }
 
-        // Initialize the app
-        init();
+        function updateUI() {
+            const card = flashcardsData[currentSubject][currentIndex];
+            document.getElementById('question-text').innerHTML = card.q;
+            document.getElementById('answer-text').innerHTML = card.a;
+            document.getElementById('progress-text').innerText = `Card ${currentIndex + 1} / ${flashcardsData[currentSubject].length}`;
+            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / flashcardsData[currentSubject].length) * 100}%`;
+            MathJax.typesetPromise([document.getElementById('question-text'), document.getElementById('answer-text')]);
+        }
+
+        window.onload = updateUI;
     </script>
 </body>
 </html>
